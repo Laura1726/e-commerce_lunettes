@@ -1,6 +1,15 @@
 from flask import Flask, request, render_template, redirect, url_for, abort, flash, session, g
 
+import os
+from dotenv import load_dotenv
 import pymysql.cursors
+
+load_dotenv()
+
+print("DB host:", os.getenv("DB_HOST"))
+print("DB user:", os.getenv("DB_USER"))
+
+
 
 def get_db():
     db = getattr(g, '_database', None)
