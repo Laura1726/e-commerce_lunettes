@@ -16,11 +16,12 @@ def get_db():
     if db is None:
         #
         db = g._database = pymysql.connect(
-            host=os.getenv("DB_HOST"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            database=os.getenv("DB_NAME"),
-            charset=os.getenv("DB_CHARSET"),
+            host=os.getenv("MYSQLHOST"),
+            user=os.getenv("MYSQLUSER"),
+            password=os.getenv("MYSQLPASSWORD"),
+            database=os.getenv("MYSQLDATABASE"),
+            port=int(os.getenv("MYSQLPORT")),
+            charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor
         )
         # à activer sur les machines personnelles :
