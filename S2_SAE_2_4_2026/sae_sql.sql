@@ -1,6 +1,6 @@
 -- USE S2BDD;
 
-DROP TABLE IF EXISTS detient,ligne_panier,ligne_commande,commande,lunette,utilisateur,couleur,categorie,etat;
+DROP TABLE IF EXISTS ligne_panier,ligne_commande,commande,lunette,utilisateur,couleur,categorie,etat;
 
 CREATE TABLE IF NOT EXISTS utilisateur(
     id_utilisateur INT AUTO_INCREMENT,
@@ -67,8 +67,10 @@ CREATE TABLE IF NOT EXISTS lunette(
     fournisseur INT,
     marque VARCHAR(255),
     categorie_id INT,
+    couleur_id INT,
     PRIMARY KEY (id_lunette),
     CONSTRAINT Fk_lunette_categorie FOREIGN KEY (categorie_id) REFERENCES categorie(id_categorie)
+    CONSTRAINT Fk_lunette_couleur FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
 );
 
 
@@ -146,26 +148,26 @@ INSERT INTO commande(id_commande, date_achat, etat_id, utilisateur_id) VALUES (1
                                                                               (3,'2023-06-26',1,2),
                                                                               (4,'2024-10-11',2,2);
 
-INSERT INTO lunette(id_lunette, nom_lunette, sexe, indice_protection, taille_monture, prix_lunette, image, stock, fournisseur, marque, categorie_id) VALUES (1,'mirage','h',3,4,267.98,'lunette1.webp',2,1,'Rayban',1),
-                                                                                                                                                                  (2,'meta','h',3,2,478.87,'lunette2.webpp',1,2,'Fendi',2),
-                                                                                                                                                                  (3,'infinity','f',4,5,980.67,'lunette3.webp',100,3,'Optic2000',1),
-                                                                                                                                                                  (4,'vortex','h',1,1,750,'lunette4.webp',50,1,'KABOOM',1),
-                                                                                                                                                                  (5,'Fendigraphy','f',4,4,375.3,'lunette5.webp',5,1,'Furet',2),
-                                                                                                                                                                  (6,'MAG450 ','h',1,1,50.0,'lunette6.webp',589,1,'LV',1),
-                                                                                                                                                                  (7,'Orbis-Quadrum','h',3,2,234.67,'lunette7.webp',0,2,'Liketheview',1),
-                                                                                                                                                                  (8,'X-Fit','h',3,4,999.99,'lunette8.webp',45,3,'pipo',4),
-                                                                                                                                                                  (9,'Cobra Competizione','f',2,3,65.0,'lunette9.webp',45,3,'Rayban',4),
-                                                                                                                                                                  (10,'Fastskin','h',1,2,55.55,'lunette10.webp',43,2,'Fendi',4),
-                                                                                                                                                                  (11,'Lys ','h',4,3,110.0,'lunette11.webp',23,3,'chut',1),
-                                                                                                                                                                  (12,' GC X Speed','h',3,4,940,'lunette12.webp',20,2,'Optic2000',3),
-                                                                                                                                                                  (13,'Flower','h',5,5,275.0,'lunette13.webp',23,1,'KABOOM',2),
-                                                                                                                                                                  (14,'ClassicFly ','f',3,4,145.0,'lunette14.webp',2,2,'Athena',2),
-                                                                                                                                                                  (15,' CT0092O','h',3,3,850.0,'lunette15.webp',45,1,'glow',1),
-                                                                                                                                                                  (16,'GC Speed Max','h',5,3,130.0,'lunette16.webp',1,3,'fiou',3),
-                                                                                                                                                                  (17,'Vintage','h',2,3,80.0,'lunette17.webp',230,1,'gru',1),
-                                                                                                                                                                  (18,'Prisme','h',3,2,190,'lunette18.webp',34,1,'top1',2),
-                                                                                                                                                                  (19,'Bee','f',2,3,225.0,'lunette19.webp',3,2,'Lastreet',1),
-                                                                                                                                                                  (20,'Hot Rod','h',3,4,140,'lunette20.webp',4,1,'Lastreet',2);
+INSERT INTO lunette(id_lunette, nom_lunette, sexe, indice_protection, taille_monture, prix_lunette, image, stock, fournisseur, marque, categorie_id, couleur_id) VALUES (1,'mirage','h',3,4,267.98,'lunette1.webp',2,1,'Rayban',1, 1),
+                                                                                                                                                                  (2,'meta','h',3,2,478.87,'lunette2.webpp',1,2,'Fendi',2, 7),
+                                                                                                                                                                  (3,'infinity','f',4,5,980.67,'lunette3.webp',100,3,'Optic2000',1,2),
+                                                                                                                                                                  (4,'vortex','h',1,1,750,'lunette4.webp',50,1,'KABOOM',1,3),
+                                                                                                                                                                  (5,'Fendigraphy','f',4,4,375.3,'lunette5.webp',5,1,'Furet',2,4),
+                                                                                                                                                                  (6,'MAG450 ','h',1,1,50.0,'lunette6.webp',589,1,'LV',1,5),
+                                                                                                                                                                  (7,'Orbis-Quadrum','h',3,2,234.67,'lunette7.webp',0,2,'Liketheview',1,6),
+                                                                                                                                                                  (8,'X-Fit','h',3,4,999.99,'lunette8.webp',45,3,'pipo',4,7),
+                                                                                                                                                                  (9,'Cobra Competizione','f',2,3,65.0,'lunette9.webp',45,3,'Rayban',4,8),
+                                                                                                                                                                  (10,'Fastskin','h',1,2,55.55,'lunette10.webp',43,2,'Fendi',4,9),
+                                                                                                                                                                  (11,'Lys ','h',4,3,110.0,'lunette11.webp',23,3,'chut',1,1),
+                                                                                                                                                                  (12,' GC X Speed','h',3,4,940,'lunette12.webp',20,2,'Optic2000',3,2),
+                                                                                                                                                                  (13,'Flower','h',5,5,275.0,'lunette13.webp',23,1,'KABOOM',2,3),
+                                                                                                                                                                  (14,'ClassicFly ','f',3,4,145.0,'lunette14.webp',2,2,'Athena',2,4),
+                                                                                                                                                                  (15,' CT0092O','h',3,3,850.0,'lunette15.webp',45,1,'glow',1,5),
+                                                                                                                                                                  (16,'GC Speed Max','h',5,3,130.0,'lunette16.webp',1,3,'fiou',3,6),
+                                                                                                                                                                  (17,'Vintage','h',2,3,80.0,'lunette17.webp',230,1,'gru',1,7),
+                                                                                                                                                                  (18,'Prisme','h',3,2,190,'lunette18.webp',34,1,'top1',2,8),
+                                                                                                                                                                  (19,'Bee','f',2,3,225.0,'lunette19.webp',3,2,'Lastreet',1,9),
+                                                                                                                                                                  (20,'Hot Rod','h',3,4,140,'lunette20.webp',4,1,'Lastreet',2,1);
 
 
 INSERT INTO ligne_commande (prix, quantite, lunette_id, commande_id) VALUES
@@ -186,52 +188,3 @@ INSERT INTO ligne_panier (date_ajout, quantite, lunette_id, utilisateur_id) VALU
 
 ('2025-01-15', 1, 8, 3),
 ('2025-01-18', 3, 17, 3);
-
-
-INSERT INTO detient (lunette_id, couleur_id) VALUES
-(1, 1),
-(1, 7),
-
-(2, 1),
-(2, 2),
-
-(3, 3),
-(3, 9),
-
-(4, 1),
-
-(5, 6),
-(5, 3),
-
-(6, 1),
-
-(7, 8),
-
-(8, 7),
-(8, 9),
-
-(9, 2),
-
-(10, 1),
-(10, 7),
-
-(11, 5),
-
-(12, 1),
-
-(13, 4),
-(13, 9),
-
-(14, 6),
-
-(15, 1),
-
-(16, 7),
-
-(17, 6),
-
-(18, 1),
-
-(19, 3),
-
-(20, 5);
