@@ -103,7 +103,7 @@ INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'expedier'),
         categorie_id INT,
         couleur_id INT,
         PRIMARY KEY (id_lunette),
-        CONSTRAINT Fk_lunette_categorie FOREIGN KEY (categorie_id) REFERENCES categorie(id_categorie)
+        CONSTRAINT Fk_lunette_categorie FOREIGN KEY (categorie_id) REFERENCES categorie(id_categorie),
         CONSTRAINT Fk_lunette_couleur FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
     )  DEFAULT CHARSET=utf8;  
      '''

@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS lunette(
     categorie_id INT,
     couleur_id INT,
     PRIMARY KEY (id_lunette),
-    CONSTRAINT Fk_lunette_categorie FOREIGN KEY (categorie_id) REFERENCES categorie(id_categorie)
+    CONSTRAINT Fk_lunette_categorie FOREIGN KEY (categorie_id) REFERENCES categorie(id_categorie),
     CONSTRAINT Fk_lunette_couleur FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
 );
 
@@ -96,13 +96,6 @@ CREATE TABLE IF NOT EXISTS ligne_panier(
     CONSTRAINT Fk_ligne_panier_commande FOREIGN KEY (utilisateur_id) REFERENCES utilisateur(id_utilisateur)
 );
 
-CREATE TABLE IF NOT EXISTS detient(
-    lunette_id INT,
-    couleur_id INT,
-    PRIMARY KEY (lunette_id,couleur_id),
-    CONSTRAINT Fk_detient_lunette FOREIGN KEY (lunette_id) REFERENCES lunette(id_lunette),
-    CONSTRAINT Fk_detient_couleur FOREIGN KEY (couleur_id) REFERENCES couleur(id_couleur)
-);
 
 
 
