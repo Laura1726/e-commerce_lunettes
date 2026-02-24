@@ -51,6 +51,7 @@ def client_article_show():                                 # remplace client_ind
 
 
 
+
     if len(articles_panier) >= 1:
         sql = ''' calcul du prix total du panier '''
         prix_total = None

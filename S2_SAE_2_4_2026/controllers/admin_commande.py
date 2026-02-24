@@ -18,16 +18,29 @@ def admin_index():
 def admin_commande_show():
     mycursor = get_db().cursor()
     admin_id = session['id_user']
-    sql = '''      '''
+    sql = ''' SELECT c.id_commande,c.date_achat,e.libelle_etat AS libelle,u.login,COUNT(lc.lunette_id) AS nbr_articles,SUM(lc.prix * lc.quantite) AS prix_total
+        FROM commande c
+        JOIN utilisateur u ON u.id_utilisateur = c.utilisateur_id
+        JOIN etat e ON e.id_etat = c.etat_id
+        LEFT JOIN ligne_commande lc ON lc.commande_id = c.id_commande
+        GROUP BY c.id_commande, c.date_achat, e.libelle_etat, u.nom
+        ORDER BY c.date_achat DESC     '''
 
-    commandes=[]
+    mycursor.execute(sql)
+    commandes = mycursor.fetchall()
 
     articles_commande = None
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     print(id_commande)
     if id_commande != None:
-        sql = '''    '''
+        sql = ''' SELECT l.nom_lunette AS nom,l.image,lc.quantite,lc.prix,(lc.prix * lc.quantite) AS prix_ligne
+            FROM ligne_commande lc
+            JOIN lunette l ON l.id_lunette = lc.lunette_id
+            WHERE lc.commande_id = %s   '''
+
+        mycursor.execute(sql, (id_commande,))
+        articles_commande = mycursor.fetchall()
         commande_adresses = []
     return render_template('admin/commandes/show.html'
                            , commandes=commandes
@@ -42,7 +55,10 @@ def admin_commande_valider():
     commande_id = request.form.get('id_commande', None)
     if commande_id != None:
         print(commande_id)
-        sql = '''           '''
+        sql = '''   UPDATE commande
+            SET etat_id = 2
+            WHERE id_commande = %s
+            AND etat_id = 1         '''
         mycursor.execute(sql, commande_id)
         get_db().commit()
     return redirect('/admin/commande/show')
