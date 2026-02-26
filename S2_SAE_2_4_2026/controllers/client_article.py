@@ -16,7 +16,7 @@ def client_article_show():                                 # remplace client_ind
 
     sql = '''   selection des articles   '''
 
-    sql = ''' SELECT id_lunette, nom_lunette AS nom, sexe, indice_protection, taille_monture AS taille,
+    sql = ''' SELECT id_lunette AS id_article, nom_lunette AS nom, sexe, indice_protection, taille_monture AS taille,
     prix_lunette AS prix, image, stock, fournisseur, marque, categorie_id
     FROM lunette
     ORDER BY nom ASC;
@@ -38,8 +38,15 @@ def client_article_show():                                 # remplace client_ind
     categorie = mycursor.fetchall()
     types_article = categorie
 
-    sql = "SELECT * , 10 as prix , concat('lunette',lunette_id) as nom FROM ligne_panier"
-    mycursor.execute(sql)
+    sql = """SELECT lp.*,
+                    l.prix_lunette AS prix,
+                    l.nom_lunette  AS nom,
+                    l.stock,
+                    lp.lunette_id  AS id_article
+             FROM ligne_panier lp
+                      JOIN lunette l ON lp.lunette_id = l.id_lunette
+             WHERE lp.utilisateur_id = %s"""
+    mycursor.execute(sql, (id_client,))
     articles_panier = mycursor.fetchall()
     prix_total = 123  # requete à faire
 
@@ -53,13 +60,13 @@ def client_article_show():                                 # remplace client_ind
 
 
     if len(articles_panier) >= 1:
-        sql = ''' calcul du prix total du panier '''
-        prix_total = None
+        prix_total = sum(item['prix'] * item['quantite'] for item in articles_panier)
     else:
         prix_total = None
+
     return render_template('client/boutique/panier_article.html'
                            , articles=articles
                            , articles_panier=articles_panier
-                           #, prix_total=prix_total
+                           , prix_total=prix_total
                            , items_filtre=types_article
                            )

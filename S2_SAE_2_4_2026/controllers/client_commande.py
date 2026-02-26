@@ -14,12 +14,15 @@ client_commande = Blueprint('client_commande', __name__,
 def client_commande_valide():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = ''' selection des articles d'un panier 
-    '''
-    articles_panier = []
+    sql = """SELECT lp.*, l.prix_lunette AS prix, l.nom_lunette AS nom
+             FROM ligne_panier lp
+                      JOIN lunette l ON lp.lunette_id = l.id_lunette
+             WHERE lp.utilisateur_id = %s"""
+    mycursor.execute(sql, (id_client,))
+    articles_panier = mycursor.fetchall()
+
     if len(articles_panier) >= 1:
-        sql = ''' calcul du prix total du panier '''
-        prix_total = None
+        prix_total = sum(item['prix'] * item['quantite'] for item in articles_panier)
     else:
         prix_total = None
     # etape 2 : selection des adresses
@@ -39,21 +42,29 @@ def client_commande_add():
     # choix de(s) (l')adresse(s)
 
     id_client = session['id_user']
-    sql = ''' selection du contenu du panier de l'utilisateur '''
-    items_ligne_panier = []
-    # if items_ligne_panier is None or len(items_ligne_panier) < 1:
-    #     flash(u'Pas d\'articles dans le ligne_panier', 'alert-warning')
-    #     return redirect('/client/article/show')
-                                           # https://pynative.com/python-mysql-transaction-management-using-commit-rollback/
-    #a = datetime.strptime('my date', "%b %d %Y %H:%M")
+    sql = """SELECT lp.*, l.prix_lunette AS prix
+             FROM ligne_panier lp
+                      JOIN lunette l ON lp.lunette_id = l.id_lunette
+             WHERE lp.utilisateur_id = %s"""
+    mycursor.execute(sql, (id_client,))
+    items_ligne_panier = mycursor.fetchall()
 
-    sql = ''' creation de la commande '''
+    # Création de la commande
+    sql = "INSERT INTO commande(date_achat, etat_id, utilisateur_id) VALUES (CURRENT_DATE, 1, %s)"
+    mycursor.execute(sql, (id_client,))
 
-    sql = '''SELECT last_insert_id() as last_insert_id'''
-    # numéro de la dernière commande
+    # Récupération de l'id de la nouvelle commande
+    mycursor.execute("SELECT last_insert_id() as last_insert_id")
+    id_commande = mycursor.fetchone()['last_insert_id']
+
     for item in items_ligne_panier:
-        sql = ''' suppression d'une ligne de panier '''
-        sql = "  ajout d'une ligne de commande'"
+        # Ajout d'une ligne de commande
+        sql = "INSERT INTO ligne_commande(prix, quantite, lunette_id, commande_id) VALUES (%s, %s, %s, %s)"
+        mycursor.execute(sql, (item['prix'], item['quantite'], item['lunette_id'], id_commande))
+
+        # Suppression de la ligne de panier
+        sql = "DELETE FROM ligne_panier WHERE lunette_id = %s AND utilisateur_id = %s"
+        mycursor.execute(sql, (item['lunette_id'], id_client))
 
     get_db().commit()
     flash(u'Commande ajoutée','alert-success')
@@ -66,15 +77,30 @@ def client_commande_add():
 def client_commande_show():
     mycursor = get_db().cursor()
     id_client = session['id_user']
-    sql = '''  selection des commandes ordonnées par état puis par date d'achat descendant '''
-    commandes = []
+    sql = """SELECT c.*,
+                    SUM(lc.prix * lc.quantite) AS prix_total,
+                    COUNT(lc.lunette_id)       AS nbr_articles,
+                    e.libelle_etat             AS libelle
+             FROM commande c
+                      LEFT JOIN ligne_commande lc ON c.id_commande = lc.commande_id
+                      LEFT JOIN etat e ON c.etat_id = e.id_etat
+             WHERE c.utilisateur_id = %s
+             GROUP BY c.id_commande
+             ORDER BY c.etat_id ASC, c.date_achat DESC"""
+    mycursor.execute(sql, (id_client,))
+    commandes = mycursor.fetchall()
 
     articles_commande = None
     commande_adresses = None
     id_commande = request.args.get('id_commande', None)
     if id_commande != None:
         print(id_commande)
-        sql = ''' selection du détails d'une commande '''
+        sql = """SELECT lc.*, l.nom_lunette AS nom
+                 FROM ligne_commande lc
+                          JOIN lunette l ON lc.lunette_id = l.id_lunette
+                 WHERE lc.commande_id = %s"""
+        mycursor.execute(sql, (id_commande,))
+        articles_commande = mycursor.fetchall()
 
         # partie 2 : selection de l'adresse de livraison et de facturation de la commande selectionnée
         sql = ''' selection des adressses '''
