@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS lunette(
     stock INT,
     fournisseur INT,
     marque VARCHAR(255),
+    description VARCHAR(255),
     categorie_id INT,
     couleur_id INT,
     PRIMARY KEY (id_lunette),

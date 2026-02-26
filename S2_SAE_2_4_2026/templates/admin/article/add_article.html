@@ -24,12 +24,15 @@
                     <select name="type_article_id" required class="form-select">
                         <option value="">Sélectionner un type d'article</option>
                         {% for type in types_article %}
-                             <option value="{{ type.id_type_article }}"> {{ type.libelle }}</option>
+                             <option value="{{ type.id_categorie }}"> {{ type.libelle_categorie }}</option>
                         {% endfor %}
                     </select>
                 </label>
                 <label for="description">description :
                     <input name="description" type="text" class="form-control" >
+                </label>
+                <label for="stock">stock :
+                    <input name="stock" type="number" class="form-control" >
                 </label>
                 <label for="submit">
                     <input name="submit" type="submit" value="Ajouter" class="btn btn-primary mt-2">

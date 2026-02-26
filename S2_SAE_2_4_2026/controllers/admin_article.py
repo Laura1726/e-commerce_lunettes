@@ -30,9 +30,14 @@ def show_article():
 @admin_article.route('/admin/article/add', methods=['GET'])
 def add_article():
     mycursor = get_db().cursor()
+    sql = '''SELECT id_categorie, libelle_categorie \
+             FROM categorie \
+             ORDER BY libelle_categorie ASC'''
+    mycursor.execute(sql)
+    types_article = mycursor.fetchall()
 
     return render_template('admin/article/add_article.html'
-                           #,types_article=type_article,
+                           ,types_article=types_article,
                            #,couleurs=colors
                            #,tailles=tailles
                             )
@@ -46,6 +51,7 @@ def valid_add_article():
     type_article_id = request.form.get('type_article_id', '')
     prix = request.form.get('prix', '')
     description = request.form.get('description', '')
+    stock = request.form.get('stock', '')
     image = request.files.get('image', '')
 
     if image:
@@ -55,17 +61,18 @@ def valid_add_article():
         print("erreur")
         filename=None
 
-    sql = '''  requête admin_article_2 '''
+    sql = ''' INSERT INTO lunette (nom_lunette, image, prix_lunette, categorie_id, description, stock)
+    VALUES (%s, %s, %s, %s, %s, %s) '''
 
-    tuple_add = (nom, filename, prix, type_article_id, description)
+    tuple_add = (nom, filename, prix, type_article_id, description, stock)
     print(tuple_add)
     mycursor.execute(sql, tuple_add)
     get_db().commit()
 
     print(u'article ajouté , nom: ', nom, ' - type_article:', type_article_id, ' - prix:', prix,
-          ' - description:', description, ' - image:', image)
+          ' - description:', description, ' - image:', image, ' - stock:', stock)
     message = u'article ajouté , nom:' + nom + '- type_article:' + type_article_id + ' - prix:' + prix + ' - description:' + description + ' - image:' + str(
-        image)
+        image ) + ' - stock:' + str(stock)
     flash(message, 'alert-success')
     return redirect('/admin/article/show')
 
@@ -74,7 +81,9 @@ def valid_add_article():
 def delete_article():
     id_article=request.args.get('id_article')
     mycursor = get_db().cursor()
-    sql = ''' requête admin_article_3 '''
+    sql = ''' SELECT COUNT(*) AS nb_declinaison 
+         FROM ligne_commande 
+         WHERE lunette_id = %s '''
     mycursor.execute(sql, id_article)
     nb_declinaison = mycursor.fetchone()
     if nb_declinaison['nb_declinaison'] > 0:
