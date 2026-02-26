@@ -126,9 +126,7 @@ INSERT INTO couleur(id_couleur, libelle) VALUES (1,'noir'),
 
 
 INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en attente'),
-                                               (2,'expédie'),
-                                               (3,'valide'),
-                                               (4,'confirme');
+                                               (2,'expédie');
 
 INSERT INTO categorie(id_categorie, libelle_categorie) VALUES (1,'lunette de vue'),
                                                               (2,'lunette de soleil'),

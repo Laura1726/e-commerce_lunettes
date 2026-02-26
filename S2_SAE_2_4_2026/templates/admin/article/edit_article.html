@@ -24,7 +24,7 @@ types_article : tableau de dictionnaires
         {% endif %}
             <div class="w-25">
                 <form class="w-190" method="post" action="/admin/article/edit" enctype="multipart/form-data">
-                    <input type="hidden" value="{{ article.id_article }}" name="id_article">
+                    <input type="hidden" value="{{ article.id_lunette }}" name="id_article">
                     <label for="nom">Nom :
                         <input name="nom" type="text" value="{{ article.nom }}" class="form-control">
                     </label>
@@ -39,7 +39,7 @@ types_article : tableau de dictionnaires
                 <label for="type_article_id">Type de l'article :
                     <select name="type_article_id" class="form-select">
                             {% for type in types_article %}
-                                 <option value="{{ type.id_type_article }}" {% if type.id_type_article == article.type_article_id %} selected {% endif %}> {{ type.libelle }}</option>
+                                 <option value="{{ type.id_categorie }}" {% if type.id_categorie == article.categorie_id %} selected {% endif %}> {{ type.libelle_categorie }}</option>
                             {% endfor %}
                         </select>
                     </label>

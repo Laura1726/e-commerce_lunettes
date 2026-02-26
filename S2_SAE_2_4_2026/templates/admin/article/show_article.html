@@ -30,8 +30,8 @@ articles (tableau de dictionnaires)
         {% for ligne in articles %}
            <tr>
                   <td>{{ ligne.nom }}</td>
-                  <td>{{ ligne.id_article }}</td>
-                  <td><span style="color: red">{{ ligne.libelle }}</span> ({{ ligne.categorie_id }})</td>
+                  <td>{{ ligne.id_lunette }}</td>
+                  <td><span style="color: red">{{ ligne.libelle_categorie }}</span> ({{ ligne.categorie_id }})</td>
                   <td>{#{ ligne.prix }#}  {{  "{:,.2f} €".format(ligne.prix) }}</td>
                   <td>
                   {% if ligne.stock is defined %}
@@ -79,9 +79,9 @@ articles (tableau de dictionnaires)
                         {% endif %}
                   </td>
                   <td>
-                      <a  class="btn btn-outline-danger" href="/admin/article/delete?id_article={{ ligne.id_article }}" onclick="return confirm('Are you sure?')" >supprimer</a>
-                      <a  class="btn btn-outline-warning" href="/admin/article/edit?id_article={{ ligne.id_article }}">editer</a>
-                      <a  class="btn btn-outline-warning" href="/admin/article/commentaires?id_article={{ ligne.id_article }}">commentaires</a>
+                      <a  class="btn btn-outline-danger" href="/admin/article/delete?id_article={{ ligne.id_lunette }}" onclick="return confirm('Are you sure?')" >supprimer</a>
+                      <a  class="btn btn-outline-warning" href="/admin/article/edit?id_article={{ ligne.id_lunette }}">editer</a>
+                      <a  class="btn btn-outline-warning" href="/admin/article/commentaires?id_article={{ ligne.id_lunette }}">commentaires</a>
                   </td>
            </tr>
         {% endfor %}

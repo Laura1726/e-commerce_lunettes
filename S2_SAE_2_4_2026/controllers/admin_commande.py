@@ -18,13 +18,13 @@ def admin_index():
 def admin_commande_show():
     mycursor = get_db().cursor()
     admin_id = session['id_user']
-    sql = ''' SELECT c.id_commande,c.date_achat,e.libelle_etat AS libelle,u.login,COUNT(lc.lunette_id) AS nbr_articles,SUM(lc.prix * lc.quantite) AS prix_total
-        FROM commande c
-        JOIN utilisateur u ON u.id_utilisateur = c.utilisateur_id
-        JOIN etat e ON e.id_etat = c.etat_id
-        LEFT JOIN ligne_commande lc ON lc.commande_id = c.id_commande
-        GROUP BY c.id_commande, c.date_achat, e.libelle_etat, u.nom
-        ORDER BY c.date_achat DESC     '''
+    sql = ''' SELECT c.id_commande, c.date_achat, c.etat_id, e.libelle_etat AS libelle, u.login, COUNT(lc.lunette_id) AS nbr_articles, SUM(lc.prix * lc.quantite) AS prix_total
+         FROM commande c
+         JOIN utilisateur u ON u.id_utilisateur = c.utilisateur_id
+         JOIN etat e ON e.id_etat = c.etat_id
+         LEFT JOIN ligne_commande lc ON lc.commande_id = c.id_commande
+         GROUP BY c.id_commande, c.date_achat, c.etat_id, e.libelle_etat, u.nom
+         ORDER BY c.date_achat DESC     '''
 
     mycursor.execute(sql)
     commandes = mycursor.fetchall()
@@ -34,10 +34,13 @@ def admin_commande_show():
     id_commande = request.args.get('id_commande', None)
     print(id_commande)
     if id_commande != None:
-        sql = ''' SELECT l.nom_lunette AS nom,l.image,lc.quantite,lc.prix,(lc.prix * lc.quantite) AS prix_ligne
-            FROM ligne_commande lc
-            JOIN lunette l ON l.id_lunette = lc.lunette_id
-            WHERE lc.commande_id = %s   '''
+        sql = ''' SELECT l.nom_lunette AS nom, l.image, lc.quantite, lc.prix, 
+         (lc.prix * lc.quantite) AS prix_ligne,
+         c.etat_id, c.id_commande AS id
+         FROM ligne_commande lc
+         JOIN lunette l ON l.id_lunette = lc.lunette_id
+         JOIN commande c ON c.id_commande = lc.commande_id
+         WHERE lc.commande_id = %s   '''
 
         mycursor.execute(sql, (id_commande,))
         articles_commande = mycursor.fetchall()

@@ -17,10 +17,12 @@ admin_article = Blueprint('admin_article', __name__,
 @admin_article.route('/admin/article/show')
 def show_article():
     mycursor = get_db().cursor()
-    sql = '''  SELECT id_lunette, nom_lunette AS nom, sexe, indice_protection, taille_monture AS taille,
-    prix_lunette AS prix, image, stock, fournisseur, marque, categorie_id
-    FROM lunette
-    ORDER BY nom ASC;
+    sql = '''  SELECT l.id_lunette, l.nom_lunette AS nom, l.sexe, l.indice_protection, 
+         l.taille_monture AS taille, l.prix_lunette AS prix, l.image, l.stock, 
+         l.fournisseur, l.marque, l.categorie_id, c.libelle_categorie
+         FROM lunette l
+         JOIN categorie c ON c.id_categorie = l.categorie_id
+         ORDER BY nom ASC
     '''
     mycursor.execute(sql)
     articles = mycursor.fetchall()
@@ -90,13 +92,16 @@ def delete_article():
         message= u'il y a des declinaisons dans cet article : vous ne pouvez pas le supprimer'
         flash(message, 'alert-warning')
     else:
-        sql = ''' requête admin_article_4 '''
+        sql = ''' SELECT image 
+         FROM lunette 
+         WHERE id_lunette = %s '''
         mycursor.execute(sql, id_article)
         article = mycursor.fetchone()
         print(article)
         image = article['image']
 
-        sql = ''' requête admin_article_5  '''
+        sql = ''' DELETE FROM lunette 
+         WHERE id_lunette = %s  '''
         mycursor.execute(sql, id_article)
         get_db().commit()
         if image != None:
@@ -114,13 +119,17 @@ def edit_article():
     id_article=request.args.get('id_article')
     mycursor = get_db().cursor()
     sql = '''
-    requête admin_article_6    
+    SELECT id_lunette, nom_lunette AS nom, prix_lunette AS prix, image, stock, description, categorie_id
+    FROM lunette 
+    WHERE id_lunette=%s  
     '''
     mycursor.execute(sql, id_article)
     article = mycursor.fetchone()
     print(article)
     sql = '''
-    requête admin_article_7
+    SELECT id_categorie, libelle_categorie 
+    FROM categorie 
+    ORDER BY libelle_categorie ASC
     '''
     mycursor.execute(sql)
     types_article = mycursor.fetchall()
@@ -147,8 +156,11 @@ def valid_edit_article():
     type_article_id = request.form.get('type_article_id', '')
     prix = request.form.get('prix', '')
     description = request.form.get('description')
+    stock = request.form.get('stock')
     sql = '''
-       requête admin_article_8
+       SELECT image 
+    FROM lunette 
+    WHERE id_lunette = %s
        '''
     mycursor.execute(sql, id_article)
     image_nom = mycursor.fetchone()
@@ -163,8 +175,9 @@ def valid_edit_article():
             image.save(os.path.join('static/images/', filename))
             image_nom = filename
 
-    sql = '''  requête admin_article_9 '''
-    mycursor.execute(sql, (nom, image_nom, prix, type_article_id, description, id_article))
+    sql = '''UPDATE lunette SET nom_lunette = %s, image = %s, prix_lunette = %s, categorie_id = %s, description = %s,stock = %s
+         WHERE id_lunette = %s '''
+    mycursor.execute(sql, (nom, image_nom, prix, type_article_id, description, stock,id_article))
 
     get_db().commit()
     if image_nom is None:

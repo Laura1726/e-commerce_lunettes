@@ -83,8 +83,8 @@ INSERT INTO categorie(id_categorie, libelle_categorie) VALUES (1,'lunette de vue
     '''
     mycursor.execute(sql)
     sql = ''' 
-INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'expedier'),
-                                               (2,'en cours de traitement');
+INSERT INTO etat(id_etat, libelle_etat) VALUES (1,'en cours de traitement'),
+                                               (2,'expédier');
      '''
     mycursor.execute(sql)
 
