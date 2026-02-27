@@ -143,6 +143,33 @@ def client_panier_filtre():
     filter_types = request.form.getlist('filter_types', None)
     # test des variables puis
     # mise en session des variables
+
+    if filter_word or filter_word == '':
+        if len(filter_word) > 1:
+            if filter_word.isalpha():
+                session['filter_word'] = filter_word
+            else:
+                flash('Le mot doit être composé de lettres uniquement')
+        else:
+            if len(filter_word) == 1:
+                flash('Le mot doit contenir au moins 2 lettres')
+            else:
+                session.pop('filter_word', None)
+
+    if filter_prix_min or filter_prix_max:
+        if filter_prix_min.isdecimal() and filter_prix_max.isdecimal():
+            if int(filter_prix_min) < int(filter_prix_max):
+                session['filter_prix_min'] = filter_prix_min
+                session['filter_prix_max'] = filter_prix_max
+            else:
+                flash('Le prix minimum doit être inférieur au prix maximum')
+        else:
+            flash('Les prix doivent être des nombres entiers')
+    if filter_types and filter_types != []:
+        session['filter_types'] = filter_types
+
+    print(session)
+
     return redirect('/client/article/show')
 
 
