@@ -141,7 +141,7 @@ INSERT INTO commande(id_commande, date_achat, etat_id, utilisateur_id) VALUES (1
                                                                               (4,'2024-10-11',2,2);
 
 INSERT INTO lunette(id_lunette, nom_lunette, sexe, indice_protection, taille_monture, prix_lunette, image, stock, fournisseur, marque, categorie_id, couleur_id) VALUES (1,'mirage','h',3,4,267.98,'lunette1.webp',2,1,'Rayban',1, 1),
-                                                                                                                                                                  (2,'meta','h',3,2,478.87,'lunette2.webpp',1,2,'Fendi',2, 7),
+                                                                                                                                                                  (2,'meta','h',3,2,478.87,'lunette2.webp',1,2,'Fendi',2, 7),
                                                                                                                                                                   (3,'infinity','f',4,5,980.67,'lunette3.webp',100,3,'Optic2000',1,2),
                                                                                                                                                                   (4,'vortex','h',1,1,750,'lunette4.webp',50,1,'KABOOM',1,3),
                                                                                                                                                                   (5,'Fendigraphy','f',4,4,375.3,'lunette5.webp',5,1,'Furet',2,4),
